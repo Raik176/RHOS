@@ -1,0 +1,57 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          nasm \
+          xorisso \
+          grub-mkrescue \
+          qemu-system-x86 \
+          bear
+
+    - name: make all
+      run: make all
+
+    - name: Upload Kernel ISO
+      uses: actions/upload-artifact@v4
+      with:
+        name: kernel-iso-x86_64
+        path: dist/x86_64/kernel.iso
+
+    - name: Upload Kernel Binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: kernel-bin-x86_64
+        path: dist/x86_64/kernel.bin
+
+    - name: Upload Kernel Listing
+      uses: actions/upload-artifact@v4
+      with:
+        name: kernel-lst-x86_64
+        path: kernel.lst
+
+    - name: Upload Compilation Database (compile_commands.json)
+      if: success()
+      run: make bear
+      continue-on-error: true
+    - uses: actions/upload-artifact@v4
+      if: success()
+      continue-on-error: true
+      with:
+        name: compile_commands
+        path: compile_commands.json
