@@ -1,0 +1,7 @@
+build/
+dist/
+.idea/
+.cache/
+
+kernel.lst
+kernel.bin
