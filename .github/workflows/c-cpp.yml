@@ -34,7 +34,8 @@ jobs:
           grub-common \
           xorriso \
           qemu-system-x86 \
-          bear
+          bear \
+          mtools
 
     - name: Cache build directory
       uses: actions/cache@v4
