@@ -20,6 +20,6 @@ long_mode_start:
     mov rdi, [rel multiboot_info_ptr]
 	call kmain
 
-    .loop
+    .loop:
     hlt
     jmp .loop

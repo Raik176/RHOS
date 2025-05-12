@@ -13,6 +13,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Cache APT packages
+      uses: actions/cache@v4
+      id: apt-cache
+      with:
+        path: |
+          /var/cache/apt/archives
+          /var/lib/apt/lists
+        key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/main.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-apt-
+
     - name: Install build dependencies
       run: |
         sudo apt-get update
@@ -24,6 +35,15 @@ jobs:
           xorriso \
           qemu-system-x86 \
           bear
+
+    - name: Cache build directory
+      uses: actions/cache@v4
+      id: build-cache
+      with:
+        path: build
+        key: ${{ runner.os }}-build-${{ hashFiles('Makefile', 'src/**/*', 'targets/**/linker.ld') }}
+        restore-keys: |
+          ${{ runner.os }}-build-
 
     - name: make all
       run: make all

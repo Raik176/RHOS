@@ -55,7 +55,7 @@ CFLAGS        := -ffreestanding \
                  -Werror
 LDFLAGS       := -z noexecstack --gc-sections
 ASMFLAGS      :=
-QEMUFLAGS     := -serial stdio -m 1024
+QEMUFLAGS     := -serial stdio -m 1024 -d int -no-reboot
 GDBFLAGS      := -ex "file dist/x86_64/kernel.bin" -ex "target remote localhost:1234"
 
 CFLAGS_FILE := build/.cflags
@@ -112,7 +112,7 @@ $(KERNEL_ISO): $(KERNEL_BIN)
 	$(GRUB_MKRESCUE) /usr/lib/grub/i386-pc -o $@ targets/x86_64/iso
 
 $(KERNEL_LST): $(KERNEL_BIN)
-	$(OBJDUMP) -d -S $< > $@
+	$(OBJDUMP) -D -S $< > $@
 
 .PHONY: build-x86_64
 build-x86_64: $(KERNEL_ISO) $(KERNEL_LST)
