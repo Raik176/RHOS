@@ -2,9 +2,9 @@
 // Created by RHM on 30/04/2025.
 //
 
-#include "utility.h"
-#include "print.h"
-#include "kstdlib.h"
+#include "kernel/utility.h"
+#include "kernel/print.h"
+#include "kernel/kstdlib.h"
 
 void memset(void *dest, char val, uint64_t len) {
     unsigned char *temp = (unsigned char *) dest;
@@ -119,8 +119,24 @@ size_t strlen(const char *str) {
     }
     return length;
 }
+int strncmp(const char *s1, const char *s2, size_t n) {
+    for (size_t i = 0; i < n; ++i) {
+        unsigned char c1 = (unsigned char)s1[i];
+        unsigned char c2 = (unsigned char)s2[i];
 
-void panic(const char *format) {
+        if (c1 != c2) {
+            return c1 - c2;
+        }
+
+        if (c1 == '\0') {
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+__attribute__((noreturn)) void panic(const char *format) {
     kset_attr(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
 
     kputs("\nPANIC: ");
@@ -130,7 +146,7 @@ void panic(const char *format) {
     halt();
 }
 
-void halt(void) {
+__attribute__((noreturn)) void halt(void) {
     for (;;)
         __asm__ volatile("hlt;");
 }

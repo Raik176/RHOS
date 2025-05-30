@@ -2,9 +2,9 @@
 // Created by RHM on 30/04/2025.
 //
 
-#include "interrupts.h"
-#include "utility.h"
-#include "print.h"
+#include "x86_64/interrupts.h"
+#include "kernel/utility.h"
+#include "kernel/print.h"
 
 struct idt_entry idt_entries[256];
 struct idt_ptr idt_ptr;

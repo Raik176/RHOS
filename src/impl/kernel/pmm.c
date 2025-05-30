@@ -1,8 +1,8 @@
-#include "pmm.h"
-#include "multiboot.h"
-#include "utility.h"
-#include "paging.h"
-#include "print.h"
+#include "kernel/pmm.h"
+#include "kernel/multiboot.h"
+#include "kernel/utility.h"
+#include "kernel/print.h"
+#include "x86_64/paging.h"
 
 #define BITS_PER_BYTE 8
 

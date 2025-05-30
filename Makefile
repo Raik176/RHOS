@@ -52,9 +52,10 @@ CFLAGS        := -ffreestanding \
                  -Wstrict-aliasing=2 \
                  -Wshadow \
                  -Wformat=2 \
-                 -Werror
+                 -Werror \
+                 -g
 LDFLAGS       := -z noexecstack --gc-sections
-ASMFLAGS      :=
+ASMFLAGS      := -g
 QEMUFLAGS     := -serial stdio -m 1024 -d int -no-reboot
 GDBFLAGS      := -ex "file dist/x86_64/kernel.bin" -ex "target remote localhost:1234"
 
@@ -88,11 +89,11 @@ $(LDFLAGS_FILE): Makefile
 
 $(kernel_object_files): build/kernel/%.c.o : src/impl/kernel/%.c $(CFLAGS_FILE)
 	@mkdir -p $(@D)
-	$(GCC) $(CFLAGS) -I src/intf -c $< -o $@
+	$(GCC) $(CFLAGS) -I include -c $< -o $@
 
 $(x86_64_c_object_files): build/x86_64/%.c.o : src/impl/x86_64/%.c $(CFLAGS_FILE)
 	@mkdir -p $(@D)
-	$(GCC) $(CFLAGS) -I src/intf -c $< -o $@
+	$(GCC) $(CFLAGS) -I include -c $< -o $@
 
 $(x86_64_asm_object_files): build/x86_64/%.asm.o : src/impl/x86_64/%.asm $(ASMFLAGS_FILE)
 	@mkdir -p $(@D)

@@ -5,6 +5,8 @@
 #ifndef RHOS_KSTDLIB_H
 #define RHOS_KSTDLIB_H
 
+#define offsetof(type, member)  ((size_t) &(((type *)0)->member))
+
 typedef _Bool bool;
 #define true 1
 #define false 0

@@ -1,19 +1,16 @@
-#include "multiboot.h"
-#include "paging.h"
-#include "utility.h"
-#include "pmm.h"
-#include "print.h"
+#include "kernel/multiboot.h"
+#include "kernel/utility.h"
+#include "kernel/pmm.h"
+#include "kernel/print.h"
+#include "x86_64/paging.h"
 
 extern char _kernel_start, _kernel_end;
 
-typedef uint64_t page_table_entry_t;
-typedef page_table_entry_t page_table[512];
-
 page_table *new_pml4_virt_addr = NULL;
 
-void map_page(page_table *pml4, uint64_t virtual_address, uint64_t physical_address, uint64_t flags);
-
-void map_range(page_table *pml4, uint64_t virt_start, uint64_t phys_start, uint64_t size, uint64_t flags);
+page_table* get_page_table(void) {
+    return new_pml4_virt_addr;
+}
 
 void init_paging(struct multiboot_tag_mmap *mmap_tag) {
     kprintf("Initializing new page tables...\n");
@@ -39,7 +36,13 @@ void init_paging(struct multiboot_tag_mmap *mmap_tag) {
               (uint64_t) &_kernel_start, (uint64_t) &_kernel_end - (uint64_t) &_kernel_start,
               PTE_PRESENT | PTE_WRITABLE);
 
-    map_page(new_pml4_virt_addr, (uint64_t) new_pml4_virt_addr, new_pml4_phys_addr, PTE_PRESENT | PTE_WRITABLE);
+    map_page(new_pml4_virt_addr, (uint64_t) new_pml4_virt_addr,
+             new_pml4_phys_addr, PTE_PRESENT | PTE_WRITABLE);
+
+
+    map_page(new_pml4_virt_addr, 0xB8000,
+             0xB8000, PTE_PRESENT | PTE_WRITABLE | PTE_PCD |
+                      PTE_PWT | PTE_NX);
 
     for (multiboot_memory_map_t *mmap = mmap_tag->entries;
          (uint8_t *) mmap < (uint8_t *) mmap_tag + mmap_tag->size;
@@ -68,10 +71,6 @@ void init_paging(struct multiboot_tag_mmap *mmap_tag) {
             len -= PAGE_SIZE;
         }
     }
-
-    map_page(new_pml4_virt_addr, 0xB8000,
-             0xB8000, PTE_PRESENT | PTE_WRITABLE | PTE_PCD |
-                      PTE_PWT | PTE_NX);
 
     kprintf("Switching to new page tables (CR3 = %p)...\n", (void *) new_pml4_phys_addr);
     __asm__ volatile("mov %0, %%cr3"::"r"(new_pml4_phys_addr) : "memory");

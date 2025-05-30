@@ -1,7 +1,6 @@
-#include "print.h"
-#include "kstdlib.h"
-#include "kstdlib.h"
-#include <utility.h>
+#include "kernel/print.h"
+#include "kernel/kstdlib.h"
+#include "kernel/utility.h"
 
 static const size_t NUM_COLS = 80;
 static const size_t NUM_ROWS = 25;

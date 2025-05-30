@@ -2,11 +2,11 @@
 // Created by RHM on 02/05/2025.
 //
 
-#include "keyboard.h"
-#include "interrupts.h"
-#include "print.h"
-#include "utility.h"
-#include "kstdlib.h"
+#include "kernel/keyboard.h"
+#include "x86_64/interrupts.h"
+#include "kernel/print.h"
+#include "kernel/utility.h"
+#include "kernel/kstdlib.h"
 
 const uint32_t lowercase[128] = {
         UNKNOWN, ESC, '1', '2', '3', '4', '5', '6', '7', '8',

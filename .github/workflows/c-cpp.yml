@@ -13,17 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Cache APT packages
-      uses: actions/cache@v4
-      id: apt-cache
-      with:
-        path: |
-          /var/cache/apt/archives
-          /var/lib/apt/lists
-        key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/main.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-apt-
-
     - name: Install build dependencies
       run: |
         sudo apt-get update
@@ -52,19 +41,19 @@ jobs:
     - name: Upload Kernel ISO
       uses: actions/upload-artifact@v4
       with:
-        name: kernel-iso-x86_64
+        name: kernel-x86_64.iso
         path: dist/x86_64/kernel.iso
 
     - name: Upload Kernel Binary
       uses: actions/upload-artifact@v4
       with:
-        name: kernel-bin-x86_64
+        name: kernel-x86_64.bin
         path: dist/x86_64/kernel.bin
 
     - name: Upload Kernel Listing
       uses: actions/upload-artifact@v4
       with:
-        name: kernel-lst-x86_64
+        name: kernel-x86_64.lst
         path: kernel.lst
 
     - name: Upload Compilation Database (compile_commands.json)
